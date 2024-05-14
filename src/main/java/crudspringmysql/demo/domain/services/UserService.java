@@ -27,8 +27,17 @@ public class UserService {
         return new ResponseEntity<>(userSaved, HttpStatus.CREATED);
     }
 
-    public User updateUser(User user) {
-        return userRepository.save(user);
+    public ResponseEntity<?> updateUser(User user) {
+
+        if (user.getName().equals("") || user.getName().isEmpty()) {
+            return new ResponseEntity<>("O campo nome é obrigatório", HttpStatus.BAD_REQUEST);
+        } else if (user.getEmail().equals("") || user.getEmail().isEmpty()) {
+            return new ResponseEntity<>("O campo email é obrigatório", HttpStatus.BAD_REQUEST);
+        }
+
+        var userUpdated = userRepository.save(user);
+
+        return new ResponseEntity<>(userUpdated, HttpStatus.CREATED);
     }
 
     public Iterable<User> findByEmail(String email) {
