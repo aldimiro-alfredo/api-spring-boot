@@ -29,10 +29,12 @@ public class UserService {
 
     public ResponseEntity<?> updateUser(User user) {
 
-        if (user.getName().equals("") || user.getName().isEmpty()) {
-            return new ResponseEntity<>("O campo nome é obrigatório", HttpStatus.BAD_REQUEST);
+        if (user.getId() == 0 || user.getId() < 0) {
+            return new ResponseEntity<>("O ID não existe, informa um ID válido!", HttpStatus.BAD_REQUEST);
+        } else if (user.getName().equals("") || user.getName().isEmpty()) {
+            return new ResponseEntity<>("O campo nome é obrigatório!", HttpStatus.BAD_REQUEST);
         } else if (user.getEmail().equals("") || user.getEmail().isEmpty()) {
-            return new ResponseEntity<>("O campo email é obrigatório", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("O campo email é obrigatório!", HttpStatus.BAD_REQUEST);
         }
 
         var userUpdated = userRepository.save(user);
