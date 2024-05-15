@@ -3,6 +3,7 @@ package crudspringmysql.demo.domain.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import crudspringmysql.demo.infrastruture.repositories.UserRepository;
@@ -16,11 +17,15 @@ public class UserService {
 
     public ResponseEntity<?> saveUser(User user) {
 
-        if (user.getName().equals("") || user.getName().isEmpty()) {
+        if (user.getUsername().equals("") || user.getUsername().isEmpty()) {
             return new ResponseEntity<>("O campo nome é obrigatório", HttpStatus.BAD_REQUEST);
         } else if (user.getEmail().equals("") || user.getEmail().isEmpty()) {
             return new ResponseEntity<>("O campo email é obrigatório", HttpStatus.BAD_REQUEST);
         }
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String encoded_pw = encoder.encode(user.getPassword());
+        user.setPassword(encoded_pw);
 
         var userSaved = userRepository.save(user);
 
@@ -31,7 +36,7 @@ public class UserService {
 
         if (user.getId() == 0 || user.getId() < 0) {
             return new ResponseEntity<>("O ID não existe, informa um ID válido!", HttpStatus.BAD_REQUEST);
-        } else if (user.getName().equals("") || user.getName().isEmpty()) {
+        } else if (user.getUsername().equals("") || user.getUsername().isEmpty()) {
             return new ResponseEntity<>("O campo nome é obrigatório!", HttpStatus.BAD_REQUEST);
         } else if (user.getEmail().equals("") || user.getEmail().isEmpty()) {
             return new ResponseEntity<>("O campo email é obrigatório!", HttpStatus.BAD_REQUEST);
