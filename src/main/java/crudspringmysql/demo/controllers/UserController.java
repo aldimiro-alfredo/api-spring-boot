@@ -2,6 +2,7 @@ package crudspringmysql.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,9 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<?> saveUser(@RequestBody User user) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String encoded_pw = encoder.encode(user.getPassword());
+        user.setPassword(encoded_pw);
         return userService.saveUser(user);
     }
 
